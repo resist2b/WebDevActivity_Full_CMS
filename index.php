@@ -1,24 +1,32 @@
 <?php
+
 namespace APP\DB;
+
 $project = "PDO|WebDevActivity";
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 require_once 'header.php';
 require_once 'APP/DB/db.php';
+//creating DB Object
 $db = new DB('guest_book', 'root', '1');
+// creating PDO Object
 $conn = $db->connect();
+
+
+
+
 if (!$conn) {
     die('Error in DB Connection');
-}
+} else {
 
-
-
-if ($conn) {
     try {
-        $data= $db->query('SELECT * FROM  `posts', [], $conn);
-        if ($db->rowCount() > 0) {
+//PDOStatement Object
+        $data = $db->query('SELECT * FROM  `posts', [], $conn);
+
+        if ($data->rowCount() > 0) {
             ?>
+            <!--Build Web page-->
             <h1>Num Of Records : <?php echo $data->rowCount(); ?></h1>
             <table class="table table-hover">
                 <thead>
@@ -35,7 +43,7 @@ if ($conn) {
                 </thead>
                 <tbody>
 
-            <?php foreach ($data as $row) : ?>
+                    <?php foreach ($data as $row) : ?>
                         <tr>
                             <td><?= $row->id ?></td>
                             <td><?= $row->name ?></td>
@@ -52,7 +60,7 @@ if ($conn) {
 
 
                         </tr>
-            <?php endforeach; ?>
+                    <?php endforeach; ?>
 
 
 
