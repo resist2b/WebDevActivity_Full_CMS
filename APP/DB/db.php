@@ -1,6 +1,9 @@
 <?php
+
 namespace APP\DB;
+
 use \PDO;
+
 class DB {
 
     private $database;
@@ -19,16 +22,22 @@ class DB {
 
     public function connect() {
         try {
-            $pdo = new \PDO("mysql:host=" . $this->host . ";dbname=" . $this->database . "", $this->username, $this->password, array(PDO::ATTR_EMULATE_PREPARES => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ));
-            return $pdo;
+            $conn = new \PDO("mysql:host=" . $this->host . ";dbname=" . $this->database . "", $this->username, $this->password, array(PDO::ATTR_EMULATE_PREPARES => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ));
+            return $conn;
+//            echo "<pre>";
+//            print_r($pdo->getAvailableDrivers());
+//            echo "</pre>";
         } catch (PDOException $e) {
 //            echo "Connection failed: " . $e->getMessage();
             return FALSE;
         }
     }
 
-    public function query($sql,$bind,$con) {
-        
+    public function query($sql, $bindArray, $conn) {
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($bindArray);
+        $result = $stmt->fetchAll();
+        return $result ? $result : FALSE;
     }
 
 }
