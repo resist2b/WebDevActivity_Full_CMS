@@ -1,25 +1,31 @@
 <?php
 namespace APP\DB;
-use \PDO;
-$project = "WebDevActivity";
+
+$project = "PDO|WebDevActivity";
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 require_once 'header.php';
 require_once 'APP/DB/db.php';
-$conn = new DB('guest_book', 'root', '1');
-$pdo = $conn->connect();
+//creating DB Object
+$db = new DB('guest_book', 'root', '1');
+// creating PDO Object
+$conn = $db->connect();
+
+$id = htmlspecialchars($_GET['id']);
+
+
+if (!$conn) {
+    die('Error in DB Connection');
+}
 try {
-    $id = htmlspecialchars($_GET['id']);
-    $data = $pdo->prepare("SELECT * FROM  `posts`  WHERE `id`= :id");
-    $data->bindParam(':id', $id, PDO::PARAM_INT);
-    $data->execute([":id" => $id]);
+    $data = $db->query('SELECT *
+    FROM posts
+    WHERE id = :id ', [':id' => $id], $conn);
     $row = $data->fetch();
 
-    if ($data->rowCount() > 0) {
+       if ($data->rowCount() > 0) {
         ?>
-
-
         <article class="row">
             <div class="col-md-2 col-sm-2 hidden-xs">
                 <figure class="thumbnail">
@@ -36,7 +42,7 @@ try {
                         </header>
                         <div class="comment-post">
                             <p>
-        <?php echo $row->comment ?>
+                                <?php echo $row->comment ?>
                             </p>
                         </div>
                         <p class="text-right"><a href="#" class="btn btn-default btn-sm"><i class="fa fa-reply"></i> reply</a></p>
@@ -46,9 +52,6 @@ try {
         </article>
 
         <?php
-    }
- else {
-        echo "no data";
     }
 } catch (PDOException $e) {
     echo "Fetching Data ERROR: " . $e->getMessage();
