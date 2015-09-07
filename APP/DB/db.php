@@ -34,10 +34,21 @@ class DB {
     }
 
     public function query($sql, $bindArray, $conn) {
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($bindArray);
-        $result = $stmt->fetchAll();
+               
+        $PDOStatement = $conn->prepare($sql);
+        
+      
+        $PDOStatement->execute($bindArray);
+        
+        return $PDOStatement;
+        /*
+        $result = $PDOStatement->fetchAll();
+         echo "<pre>";
+        print_r($PDOStatement->rowCount());
+        echo "</pre>";
         return $result ? $result : FALSE;
+         * */
+         
     }
 
 }
