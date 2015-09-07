@@ -6,18 +6,18 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 require_once 'header.php';
 require_once 'APP/DB/db.php';
-$conn = new DB('guest_book', 'root', '1');
+$db = new DB('guest_book', 'root', '1');
+$conn = $db->connect();
+if (!$conn) {
+    die('Error in DB Connection');
+}
 
 
 
-$pdo = $conn->connect();
-
-
-
-if ($pdo) {
+if ($conn) {
     try {
-        $data = $pdo->query("SELECT * FROM  `posts` ");
-        if ($data->rowCount() > 0) {
+        $data= $db->query('SELECT * FROM  `posts', [], $conn);
+        if ($db->rowCount() > 0) {
             ?>
             <h1>Num Of Records : <?php echo $data->rowCount(); ?></h1>
             <table class="table table-hover">
@@ -35,7 +35,7 @@ if ($pdo) {
                 </thead>
                 <tbody>
 
-                    <?php foreach ($data as $row) : ?>
+            <?php foreach ($data as $row) : ?>
                         <tr>
                             <td><?= $row->id ?></td>
                             <td><?= $row->name ?></td>
@@ -52,7 +52,7 @@ if ($pdo) {
 
 
                         </tr>
-                    <?php endforeach; ?>
+            <?php endforeach; ?>
 
 
 
